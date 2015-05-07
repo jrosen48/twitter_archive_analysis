@@ -15,12 +15,14 @@ require(cluster)
 # Getting data
 #---------------------------------
 
-setwd("~/Dropbox/Statistics/my_archive/csvs")
+setwd("~/Dropbox/Statistics/my_archive/twitter_archive_analysis/csvs")
 
-path = "~/Dropbox/Statistics/my_archive/csvs"
-out.file<-""
+path = "~/Dropbox/Statistics/my_archive/twitter_archive_analysis/csvs"
+
+out.file <- ""
 file.names <- dir(path, pattern =".csv")
-for(i in 1:length(file.names)){
+
+for(i in 1:32){ #change to load more files
   file <- read.table(file.names[i],header=TRUE, sep=";", stringsAsFactors=FALSE)
   out.file <- rbind(out.file, file)
 } 
@@ -31,6 +33,8 @@ for (i in 1:length(file.names)){
   my_csv_list[[i]] <- read.table(file.names[i], sep=",", header = TRUE, fill = TRUE)
   my_csv_text_list[[i]] <- my_csv_list[[i]][8]
 }
+
+str(my_csv_text_list)
 
 #---------------------------------
 # Processing text
@@ -81,7 +85,8 @@ for (i in 1:length (my_csv_text_list)){ #change this
 myTDM <- list()
 for (i in 1:length(my_csv_text_list)){
   name <- paste("doc", i, sep = "")
-  myTDM[[name]] <- TermDocumentMatrix(my_list[[name]], control = list(weighting = weightTfIdf, normalize = TRUE))
+  myTDM[[name]] <- TermDocumentMatrix(my_list[[name]], 
+                                      control = list(weighting = function(x) weightTfIdf(x, normalize = TRUE)))
 }
 
 # can replace above
@@ -181,8 +186,9 @@ for (i in length(my_cosines)){
   names(my_cosines[i]) <- paste("c", i)
 }
 
-
-write.csv(my_cosines, "my_cosines.csv")
+my_cosines <- my_cosines[1:36,]
+my_cosines
+write.csv(my_cosines, "my_archive_cosines.csv")
 
 # Interpretation
 
@@ -195,43 +201,6 @@ print(my_cosines)
 #EdTechBridge
 #TeacherEdChat
 #SciChat
-
-Jan-10
-Feb-10
-Mar-10
-Apr-10
-May-10
-Jun-10
-Jul-10
-Aug-10
-Sep-10
-Oct-10
-Nov-10
-Dec-10
-Jan-11
-Feb-11
-Mar-11
-Apr-11
-May-11
-Jun-11
-Jul-11
-Aug-11
-Sep-11
-Oct-11
-Nov-11
-Dec-11
-Jan-12
-Feb-12
-Mar-12
-Apr-12
-May-12
-Jun-12
-Jul-12
-Aug-12
-Sep-12
-Oct-12
-Nov-12
-Dec-12
 
 # View(my_cosine_list[[1]])
 # View(my_cosine_list[[2]])
